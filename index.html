@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表特牆</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="lightbox/js/lightbox.min.js"></script>
+    <link rel="stylesheet" href="lightbox/css/lightbox.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+        img{
+            height:150px;
+        }
+    </style>
+    <script>
+        var page_list = ['BeautySCU','nccubeauty','476194535860239','BeautyTKU','ntunhsbt','NTUBbeauty','BeautyPCCU','niubeautiful','319454834874546','778475502184875'];
+        var beauty_img = [];
+        var beauty_msg = [];
+        var count_i = 0;
+        $(document).ready(function(){
+                        
+        })
+        $(document).scroll(function(){
+            if($(this).scrollTop() >= 200){
+                load_data();
+            }
+        })
+        function load_data(){
+            if(beauty_img.length >= count_i){
+                $('#wall').append('<a data-lightbox="beauty" data-title="' + beauty_msg[count_i] + '" href="' + beauty_img[count_i] + '" target="_blank"><img src="' + beauty_img[count_i] + '" alt="" /></a> ');
+                count_i++;
+                
+            }
+            
+        }
+        function shuffle(array1, array2) {
+          var currentIndex = array1.length, temporaryValue1, temporaryValue2, randomIndex;
+
+          // While there remain elements to shuffle...
+          while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue1 = array1[currentIndex];
+            temporaryValue2 = array2[currentIndex];
+            array1[currentIndex] = array1[randomIndex];
+            array2[currentIndex] = array2[randomIndex];
+            array1[randomIndex] = temporaryValue1;
+            array2[randomIndex] = temporaryValue2;
+          }
+
+          return array1,array2;
+        }
+        function beauty_init(){
+            for(count in page_list){
+                FB.api(page_list[count] + '/feed',{fields:'link,picture,message',limit:150},function(res){
+
+                    $.each(res.data,function(id){
+                        if(res.data[id].picture !== undefined){
+                            var img = res.data[id].picture.replace('_s.jpg','_n.jpg');
+                            var link = res.data[id].message + res.data[id].link;
+                            beauty_img.push(img);
+                            beauty_msg.push(link);
+                            
+                        }
+                        
+                    })
+                    shuffle(beauty_img,beauty_msg);
+                    for(var i=0;i<=10;i++){
+                        load_data();
+                    }
+                });    
+
+            }
+
+            
+
+        }
+
+    </script>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '500287193430405',
+                xfbml      : true,
+                version    : 'v2.0'
+            });
+            FB.getLoginStatus(function(res){
+                if(res.status == 'connected'){
+                    beauty_init();
+                }
+                
+            });
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "http://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+</head>
+<body>
+    
+    <div class="col-md-12" id="wall">
+        <h2>表特牆 <small>台科、東吳、政大、輔大、淡江、北護、北商、文化、宜大、德明<fb:login-button scope="email" onlogin="beauty_init();"></fb:login-button></small></h2>
+        
+    </div>
+</body>
+</html>
