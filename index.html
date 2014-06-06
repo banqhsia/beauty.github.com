@@ -61,7 +61,7 @@
                     $.each(res.data,function(id){
                         if(res.data[id].picture !== undefined){
                             var img = res.data[id].picture.replace('_s.jpg','_n.jpg');
-                            var link = res.data[id].message + res.data[id].link;
+                            var link = res.data[id].message + "<a href='" + res.data[id].link + "'>原始連結</a>";
                             beauty_img.push(img);
                             beauty_msg.push(link);
                             
